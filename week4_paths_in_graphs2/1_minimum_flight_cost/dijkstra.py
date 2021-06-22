@@ -13,6 +13,7 @@ class Vertex():
 
         # for computing of shortest path
         self.dist = math.inf
+        self.prev = None
 
     def __lt__(self, other):
         return self.dist < other.dist
@@ -42,8 +43,6 @@ class Graph():
 
         self.heap = [s]
 
-        known_region = set()
-
         # stop iterating once all vertices are of known distances
         while len(self.heap) > 0:
             
@@ -51,15 +50,12 @@ class Graph():
 
             if u.index == t: break
 
-            if not u.index in known_region:
-                known_region.add(u.index)
-
             for (v, w) in self.adj[u]:
 
-                if v.dist > u.dist + w and not v in known_region:
+                if v.dist > u.dist + w:
 
                     v.dist = u.dist + w
-
+                    v.prev = u
                     heapq.heappush(self.heap, v)
        
 
@@ -67,8 +63,13 @@ def distance(graph, u, v):
     """"Given a directed graph with positive edge weights, and the indices of 2 vertices u and v, return the length of the shortest path from u to v using dijkstra's algorithm. Return -1 if there is no path i.e. v is not reachable from u"""
     graph.get_shortest_path(u, v)
     result = graph.vertices[v].dist
-   
 
+    v = graph.vertices[v]
+    print(v.index+1)
+    while v.prev:
+        print(v.prev.index+1)
+        v = v.prev
+   
     return result if not math.isinf(result) else -1
 
 
